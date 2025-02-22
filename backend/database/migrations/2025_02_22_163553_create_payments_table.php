@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->enum('method', array_column(PaymentMethodType::cases(), 'value'));
             $table->enum('status', array_column(PaymentStatusType::cases(), 'value'));
-            $table->timestamp('paid_at', precision: 0);
+            $table->timestamp('paid_at');
         });
     }
 

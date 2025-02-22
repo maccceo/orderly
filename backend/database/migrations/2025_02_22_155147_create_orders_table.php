@@ -18,7 +18,6 @@ return new class extends Migration
             $table->enum('status', array_column(OrderStatusType::cases(), 'value'))->default(OrderStatusType::PENDING->value);
             $table->decimal('total', 10, 2);
             $table->timestamps();
-
         });
     }
 
