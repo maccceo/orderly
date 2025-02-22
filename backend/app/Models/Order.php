@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Order\OrderStatusType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,6 +14,10 @@ class Order extends Model
 
     protected $fillable = ['status', 'total'];
 
+    protected $casts = [
+        'status' => OrderStatusType::class,
+    ];
+    
     public function client()
     {
         return $this->belongsTo(Client::class);
