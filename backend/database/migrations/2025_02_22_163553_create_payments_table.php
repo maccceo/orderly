@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->decimal('amount', 10, 2);
             $table->enum('method', array_column(PaymentMethodType::cases(), 'value'));
             $table->enum('status', array_column(PaymentStatusType::cases(), 'value'));
             $table->timestamp('paid_at');
+            $table->timestamps();
         });
     }
 
