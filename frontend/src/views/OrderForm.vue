@@ -1,5 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <main></main>
+  <h1>Orders form</h1>
 </template>
+
+<style scoped></style>

@@ -102,6 +102,10 @@ export const useProductStore = defineStore('products', () => {
     }
   }
 
+  function getProductById(id: number) {
+    return products.value.find((product) => product.id === id)
+  }
+
   function setLoading(status: boolean) {
     loading.value = status
   }
@@ -121,5 +125,6 @@ export const useProductStore = defineStore('products', () => {
     createProduct,
     updateProduct,
     deleteProduct,
+    getProductById,
   }
 })

@@ -6,12 +6,39 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      redirect: { path: '/dashboard' },
+      redirect: { path: '/orders' },
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('../views/DashboardView.vue'),
+      path: '/orders',
+      name: 'orders',
+      component: () => import('../views/OrderList.vue'),
+      meta: {
+        title: 'Order list',
+      },
+    },
+    {
+      path: '/orders/:id',
+      name: 'order-details',
+      component: () => import('../views/OrderDetails.vue'),
+      meta: {
+        title: 'Order detail',
+      },
+    },
+    {
+      path: '/orders/:id/edit',
+      name: 'order-edit',
+      component: () => import('../views/OrderForm.vue'),
+      meta: {
+        title: 'Edit order',
+      },
+    },
+    {
+      path: '/orders/new',
+      name: 'order-new',
+      component: () => import('../views/OrderForm.vue'),
+      meta: {
+        title: 'Create new order',
+      },
     },
   ],
 })
