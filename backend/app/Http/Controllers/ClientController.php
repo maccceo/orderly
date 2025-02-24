@@ -15,7 +15,7 @@ class ClientController extends Controller
      */
     public function index(): JsonResponse
     {
-        $clients = Client::paginate(20);
+        $clients = Client::all();
         return response()->json($clients);
     }
 

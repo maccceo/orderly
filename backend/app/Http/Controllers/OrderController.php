@@ -14,8 +14,7 @@ class OrderController extends Controller
      */
     public function index(): JsonResponse
     {
-        // $orders = Order::paginate(20);
-        $orders = Order::with('payment', 'orderItems')->paginate(20);
+        $orders = Order::with('payment', 'orderItems')->get();
         return response()->json($orders);
     }
 
@@ -27,7 +26,7 @@ class OrderController extends Controller
         $order = Order::create($request->validated());
         return response()->json($order, 201);
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -48,7 +47,7 @@ class OrderController extends Controller
             'message' => 'Order edited successfully'
         ]);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      */
