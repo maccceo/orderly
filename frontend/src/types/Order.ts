@@ -1,3 +1,6 @@
+import type { Payment } from './Payment'
+import type { OrderItems } from './OrderItems'
+
 export interface Order {
   id: number
   client_id: number
@@ -5,6 +8,8 @@ export interface Order {
   total: number
   created_at: string
   updated_at: string
+  payment: Payment
+  order_items: OrderItems[]
 }
 
 export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled'
