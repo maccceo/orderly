@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Order;
+namespace App\Http\Requests\Product;
 
-use App\Enums\Order\OrderStatusType;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UpdateOrderRequest extends FormRequest
+class UpdateProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +22,10 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['sometimes', Rule::enum(OrderStatusType::class)],
-            'total' => ['sometimes', 'numeric', 'min:0'],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'price' => ['sometimes', 'numeric', 'min:0'],
+            'stock' => ['sometimes', 'integer', 'min:0'],
+            'description' => ['sometimes', 'nullable', 'string'],
         ];
     }
 }
