@@ -1,10 +1,7 @@
-// { "product_id": 9, "quantity": 3, "price": "1793.94" }
-
 <script setup lang="ts">
 import { useProductStore } from '@/stores/productStore'
 import type { OrderItems } from '@/types/OrderItems'
 import type { Product } from '@/types/Product'
-import { formatDate } from '@/utils/formatDate'
 import { computed } from 'vue'
 
 const { getProductById } = useProductStore()

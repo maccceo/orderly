@@ -43,7 +43,7 @@ onMounted(() => {
 <template>
   <div class="container">
     <h1>Orders</h1>
-    <td><button @click="createOrder()">Create new order</button></td>
+    <button @click="createOrder()">Create new order</button>
     <table>
       <tr>
         <th>id</th>
@@ -51,7 +51,7 @@ onMounted(() => {
         <th>status</th>
         <th>total</th>
         <th>created at</th>
-        <ht>last update</ht>
+        <th>last update</th>
         <th>payment status</th>
       </tr>
       <tr v-for="order in orders">

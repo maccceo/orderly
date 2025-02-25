@@ -27,7 +27,7 @@ const router = createRouter({
     {
       path: '/orders/:id/edit',
       name: 'order-edit',
-      component: () => import('../views/OrderForm.vue'),
+      component: () => import('../views/OrderEdit.vue'),
       meta: {
         title: 'Edit order',
       },
@@ -35,7 +35,7 @@ const router = createRouter({
     {
       path: '/orders/new',
       name: 'order-new',
-      component: () => import('../views/OrderForm.vue'),
+      component: () => import('../views/OrderCreate.vue'),
       meta: {
         title: 'Create new order',
       },

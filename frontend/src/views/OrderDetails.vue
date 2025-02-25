@@ -23,6 +23,7 @@ onMounted(() => {
 <template>
   <div class="container" v-if="currentOrder">
     <h1>Order #{{ currentOrder.id }}</h1>
+    <router-link :to="{ name: 'orders' }"><button>Get back to the orders</button></router-link>
 
     <p><b>client:</b>{{ getClientById(currentOrder.client_id)?.name || currentOrder.client_id }}</p>
     <p><b>status:</b> {{ currentOrder.status }}</p>
@@ -32,6 +33,9 @@ onMounted(() => {
     <p><b>Items:</b></p>
     <OrderItem v-for="item in currentOrder.order_items" v-bind="item" />
     <p><b>total:</b> {{ currentOrder.total }} €</p>
+  </div>
+  <div v-else>
+    <h3>No order to show</h3>
   </div>
 </template>
 

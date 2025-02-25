@@ -14,7 +14,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <RouterView />
+  <div id="app-container">
+    <RouterView />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#app-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+</style>
