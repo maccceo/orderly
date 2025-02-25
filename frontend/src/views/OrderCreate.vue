@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { useClientStore } from '@/stores/clientStore'
+import { useOrderStore } from '@/stores/orderStore'
 import { useProductStore } from '@/stores/productStore'
 import type { Client } from '@/types/Client'
-import type { OrderStatus } from '@/types/Order'
+import type { OrderStatus, CreateOrderPayload } from '@/types/Order'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref } from 'vue'
 
 interface NewOrder {
-  client: Client | null
+  client_id: Client | null
   status: OrderStatus | null
   items: NewOrderItems[]
+  total: number
 }
 interface NewOrderItems {
   product_id: number
@@ -20,16 +22,51 @@ interface NewOrderItems {
 
 const { clients } = storeToRefs(useClientStore())
 const { products } = storeToRefs(useProductStore())
+const { createOrder } = useOrderStore()
 
 const newOrder = ref<NewOrder>({
-  client: null,
+  client_id: null,
   status: null,
   items: [],
+  total: 0,
 })
 const ORDER_STATUSES = ['pending', 'paid', 'shipped', 'delivered', 'cancelled'] // todo dinamico
 
-const submitOrder = () => {
-  console.log(newOrder.value)
+const orderTotal = computed<number>(() => {
+  return newOrder.value.items.reduce((sum, item) => sum + item.price, 0)
+})
+
+const canSubmitOrder = computed<boolean>(() => {
+  return (
+    !!newOrder.value.client_id &&
+    !!newOrder.value.status &&
+    newOrder.value.items.filter((i) => i.product_id && i.product_id > 0).length > 0
+  )
+})
+
+const submitOrder = async () => {
+  if (!canSubmitOrder.value) {
+    return
+  }
+  const validItems = newOrder.value.items
+    .filter((i) => i.product_id && i.product_id > 0) // remove empty products
+    .map(({ description, ...rest }) => rest) // remove description field
+
+  const payload: CreateOrderPayload = {
+    // @ts-expect-error: Typescript can't check the canSubmitOrder computed
+    client_id: newOrder.value.client_id,
+    // @ts-expect-error: Typescript can't check the canSubmitOrder computed
+    status: newOrder.value.status,
+    total: parseFloat(orderTotal.value.toFixed(2)),
+    order_items: validItems,
+  }
+  try {
+    console.log('new order payload:', payload)
+
+    await createOrder(payload)
+  } catch (error) {
+    console.error("can't upload order", error)
+  }
 }
 
 const addItem = () => {
@@ -63,10 +100,6 @@ const updateSubtotal = (index: number) => {
   }
 }
 
-const orderTotal = computed(() => {
-  return newOrder.value.items.reduce((sum, item) => sum + item.price, 0)
-})
-
 onMounted(() => {})
 </script>
 
@@ -77,7 +110,7 @@ onMounted(() => {})
 
     <form @submit.prevent="submitOrder">
       <label>Client:</label>
-      <select v-model="newOrder.client">
+      <select v-model="newOrder.client_id">
         <option v-for="client in clients" :key="client.id" :value="client.id">
           {{ client.name }}
         </option>
@@ -111,12 +144,7 @@ onMounted(() => {})
       <button type="button" @click="addItem">Add product</button>
 
       <p>Order total: {{ orderTotal.toFixed(2) }} €</p>
-      <button
-        type="submit"
-        :disabled="!newOrder.client || !newOrder.status || newOrder.items.length === 0"
-      >
-        Send order
-      </button>
+      <button type="submit" :disabled="!canSubmitOrder">Send order</button>
     </form>
   </div>
 </template>

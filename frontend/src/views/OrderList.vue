@@ -61,7 +61,7 @@ onMounted(() => {
         <td>{{ order.total }} €</td>
         <td>{{ formatDate(order.created_at) }}</td>
         <td>{{ formatDate(order.updated_at) }}</td>
-        <td>{{ order.payment.status }}</td>
+        <td>{{ order.payment?.status || '-' }}</td>
         <td><button @click="viewOrder(order.id)">Details</button></td>
         <td><button @click="editOrder(order.id)">Edit</button></td>
         <td><button @click="deleteOrderConfirm(order.id)">Delete</button></td>

@@ -18,6 +18,13 @@ export interface CreateOrderPayload {
   client_id: number
   status: OrderStatus
   total: number
+  order_items: CreateOrderItemsPayload[]
+}
+
+export interface CreateOrderItemsPayload {
+  product_id: number
+  quantity: number
+  price: number
 }
 
 export interface UpdateOrderPayload {
