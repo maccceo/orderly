@@ -12,12 +12,12 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['status', 'total'];
+    protected $fillable = ['client_id', 'status', 'total'];
 
     protected $casts = [
         'status' => OrderStatusType::class,
     ];
-    
+
     public function client()
     {
         return $this->belongsTo(Client::class);

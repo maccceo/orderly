@@ -48,40 +48,41 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        $this->_seedClients();
-        $this->_seedProducts();
-        $this->_seedOrders();
-        $this->_seedOrderItems();
-        $this->_seedPayments();
+        $this->seedClients();
+        $this->seedProducts();
+        $this->seedOrders();
+        $this->seedOrderItems();
+        $this->seedPayments();
     }
 
-    private function _seedClients(): void
+    private function seedClients(): void
     {
         $this->clients = Client::factory()->count(self::CLIENTS_TO_CREATE)->create();
     }
 
-    private function _seedProducts(): void
+    private function seedProducts(): void
     {
         $this->products = Product::factory()->count(self::PRODUCTS_TO_CREATE)->create();
     }
 
-    private function _seedOrders(): void
+    private function seedOrders(): void
     {
         $this->clients->each(function ($client) {
             $numOrder = rand(0, self::MAX_ORDERS_PER_CLIENT);
             if ($numOrder === 0) {
                 return;
             }
-            $this->orders = $this->orders->merge(Order::factory()
-                ->count($numOrder)
-                ->create([
-                    'client_id' => $client->id
-                ])
+            $this->orders = $this->orders->merge(
+                Order::factory()
+                    ->count($numOrder)
+                    ->create([
+                        'client_id' => $client->id
+                    ])
             );
         });
     }
 
-    private function _seedOrderItems(): void
+    private function seedOrderItems(): void
     {
         $this->orders->each(function ($order) {
             // get a random amount of products
@@ -90,14 +91,15 @@ class DatabaseSeeder extends Seeder
 
             $productsOrdered->each(function ($product) use ($order, &$subtotal) {
                 $purchased = rand(1, self::MAX_SINGLE_TYPE_PRODUCT_ORDERED);
-                $this->orderItems = $this->orderItems->merge(OrderItem::factory()
-                    ->count(1)
-                    ->create([
-                        'order_id' => $order->id,
-                        'product_id' => $product->id,
-                        'quantity' => $purchased,
-                        'price' => $product->price * $purchased
-                    ])
+                $this->orderItems = $this->orderItems->merge(
+                    OrderItem::factory()
+                        ->count(1)
+                        ->create([
+                            'order_id' => $order->id,
+                            'product_id' => $product->id,
+                            'quantity' => $purchased,
+                            'price' => $product->price * $purchased
+                        ])
                 );
                 $subtotal += $product->price * $purchased;
             });
@@ -105,29 +107,18 @@ class DatabaseSeeder extends Seeder
         });
     }
 
-    private function _seedPayments(): void
+    private function seedPayments(): void
     {
         $this->orders->each(function ($order) {
-            $this->payments = $this->payments->merge(Payment::factory()
-                ->count(1)
-                ->create([
-                    'order_id' => $order->id,
-                    'status' => $this->_getPaymentStatusFromOrderStatus($order->status),
-                    'amount' => $order->total
-                ])
+            $this->payments = $this->payments->merge(
+                Payment::factory()
+                    ->count(1)
+                    ->create([
+                        'order_id' => $order->id,
+                        'status' => OrderStatusType::getPaymentStatus($order->status),
+                        'amount' => $order->total
+                    ])
             );
         });
-    }
-
-    private function _getPaymentStatusFromOrderStatus($orderStatus): PaymentStatusType
-    {
-        switch ($orderStatus) {
-            case OrderStatusType::PENDING:
-                return PaymentStatusType::PENDING;
-            case OrderStatusType::CANCELLED:
-                return PaymentStatusType::FAILED;
-            default:
-                return PaymentStatusType::COMPLETED;
-        }
     }
 }

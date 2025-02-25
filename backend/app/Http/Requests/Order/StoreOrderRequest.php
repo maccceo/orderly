@@ -24,9 +24,13 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_id' => ['required', 'exists:clients,id'],
+            'client_id' => ['required', 'integer', 'exists:clients,id'],
             'status' => ['required', Rule::enum(OrderStatusType::class)],
             'total' => ['required', 'numeric', 'min:0'],
+            'order_items' => ['required', 'array', 'min:1'],
+            'order_items.*.product_id' => ['required', 'integer', 'exists:products,id'],
+            'order_items.*.quantity' => ['required', 'integer', 'min:1'],
+            'order_items.*.price' => ['required', 'numeric', 'min:0'],
         ];
     }
 }

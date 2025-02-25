@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Order\OrderStatusType;
+use App\Enums\Payment\PaymentMethodType;
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Payment;
 use Illuminate\Http\JsonResponse;
 
 class OrderController extends Controller
@@ -23,7 +27,25 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request): JsonResponse
     {
-        $order = Order::create($request->validated());
+        $order = Order::create([
+            "client_id" => $request["client_id"],
+            "status" => $request["status"],
+            "total" => $request["total"]
+        ]);
+        // create OrderItems
+        $order->orderItems()->saveMany(
+            collect($request['order_items'])->map(function ($item) {
+                return new OrderItem($item);
+            })
+        );
+        // create Payment
+        $payment = new Payment([
+            'status' => OrderStatusType::getPaymentStatus(OrderStatusType::from($request["status"])),
+            'amount' => $request["total"],
+            'method' => $this->getRandomPaymentMethod(),
+            'paid_at' => now()
+        ]);
+        $order->payment()->save($payment);
         return response()->json($order, 201);
     }
 
@@ -55,5 +77,11 @@ class OrderController extends Controller
     {
         $order->delete();
         return response()->json(['message' => 'Order deleted successfully']);
+    }
+
+    private function getRandomPaymentMethod(): PaymentMethodType
+    {
+        $cases = PaymentMethodType::cases();
+        return $cases[array_rand($cases)];
     }
 }
