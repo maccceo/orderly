@@ -122,3 +122,10 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
+body {
+  font-family: Arial, Helvetica, Sans-Serif;
+  font-weight: normal;
+  background: #e96443;
+  background: linear-gradient(to right, #904e95, #e96443);
+}
