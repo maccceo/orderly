@@ -3,16 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Order\OrderStatusType;
-use App\Enums\Payment\PaymentMethodType;
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
+use App\Services\PaymentService;
 use Illuminate\Http\JsonResponse;
 
 class OrderController extends Controller
 {
+
+    protected PaymentService $paymentService;
+
+    public function __construct(PaymentService $paymentService)
+    {
+        $this->paymentService = $paymentService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -42,7 +50,7 @@ class OrderController extends Controller
         $payment = new Payment([
             'status' => OrderStatusType::getPaymentStatus(OrderStatusType::from($request["status"])),
             'amount' => $request["total"],
-            'method' => $this->getRandomPaymentMethod(),
+            'method' => $this->paymentService->getRandomPaymentMethod(),
             'paid_at' => now()
         ]);
         $order->payment()->save($payment);
@@ -64,6 +72,17 @@ class OrderController extends Controller
     public function update(UpdateOrderRequest $request, Order $order): JsonResponse
     {
         $order->update($request->validated());
+
+        if (!empty($request['order_items'])) {
+            // delete previous OrderItems
+            OrderItem::where('order_id', $order->id)->delete();
+            // create new updated ones
+            $order->orderItems()->saveMany(
+                collect($request['order_items'])->map(function ($item) {
+                    return new OrderItem($item);
+                })
+            );
+        }
         return response()->json([
             'data' => $order,
             'message' => 'Order edited successfully'
@@ -77,11 +96,5 @@ class OrderController extends Controller
     {
         $order->delete();
         return response()->json(['message' => 'Order deleted successfully']);
-    }
-
-    private function getRandomPaymentMethod(): PaymentMethodType
-    {
-        $cases = PaymentMethodType::cases();
-        return $cases[array_rand($cases)];
     }
 }
