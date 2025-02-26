@@ -32,4 +32,25 @@ export interface UpdateOrderPayload {
   client_id?: number
   status?: OrderStatus
   total?: number
+  order_items?: UpdateOrderItemsPayload[]
+}
+
+export interface UpdateOrderItemsPayload {
+  product_id?: number
+  quantity?: number
+  price?: number
+}
+
+export interface OrderForm {
+  client_id: number | null
+  status: OrderStatus | null
+  items: OrderFormItems[]
+  total: number
+}
+
+export interface OrderFormItems {
+  product_id: number
+  quantity: number
+  price: number
+  description: string
 }
