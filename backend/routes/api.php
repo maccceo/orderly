@@ -1,15 +1,18 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// guest routes
+Route::post('/login', [AuthController::class, 'login']);
 
-Route::apiResource('clients', ClientController::class);
-Route::apiResource('products', ProductController::class);
-Route::apiResource('orders', OrderController::class);
+// auth routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::apiResource('clients', ClientController::class);
+    Route::apiResource('products', ProductController::class);
+    Route::apiResource('orders', OrderController::class);
+});

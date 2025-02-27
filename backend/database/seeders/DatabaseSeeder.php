@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -42,19 +43,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $this->seedUsers();
         $this->seedClients();
         $this->seedProducts();
         $this->seedOrders();
         $this->seedOrderItems();
         $this->seedPayments();
     }
-
+    private function seedUsers(): void
+    {
+        User::factory()->create([
+            'name' => 'admin',
+            'email' => 'admin@admin.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('admin')
+        ]);
+    }
     private function seedClients(): void
     {
         $this->clients = Client::factory()->count(self::CLIENTS_TO_CREATE)->create();
