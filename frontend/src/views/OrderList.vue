@@ -172,7 +172,7 @@ onMounted(() => {
         <!-- payment -->
         <template v-slot:item.payment.status="{ item }">
           <v-chip :color="getPaymentStatusColor(item.payment.status)" text-color="white" small>
-            {{ item.payment.status }}
+            {{ item.payment?.status }}
           </v-chip>
         </template>
         <!-- status -->

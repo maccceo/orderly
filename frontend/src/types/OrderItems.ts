@@ -3,7 +3,7 @@ export interface OrderItems {
   order_id: number
   product_id: number
   quantity: number
-  price: number
+  price: string
   created_at: string
   updated_at: string
 }

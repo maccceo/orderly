@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import OrderForm from '@/components/order/OrderForm.vue'
+import router from '@/router'
 import { useOrderStore } from '@/stores/orderStore'
 import type {
   CreateOrderItemsPayload,
   CreateOrderPayload,
   OrderForm as OrderFormInterface,
 } from '@/types/Order'
+import { ref } from 'vue'
 
 const { createOrder } = useOrderStore()
+const snackbar = ref({
+  show: false,
+  content: '',
+  color: 'success',
+})
 
-const onSubmit = (form: OrderFormInterface) => {
+const onSubmit = async (form: OrderFormInterface) => {
   const orderItems = form.items.map<CreateOrderItemsPayload>(
     ({ description, ...rest }) => rest as CreateOrderItemsPayload,
   )
@@ -20,9 +27,22 @@ const onSubmit = (form: OrderFormInterface) => {
     order_items: orderItems,
   } as CreateOrderPayload
   try {
-    createOrder(payload)
+    await createOrder(payload)
+    snackbar.value = {
+      show: true,
+      content: 'Order succesfully created! Redirect in 3 seconds...',
+      color: 'success',
+    }
+    setTimeout(() => {
+      router.push({ name: 'orders' })
+    }, 3000)
   } catch (error) {
     console.error("Can't create order", error)
+    snackbar.value = {
+      show: true,
+      content: 'Something went wrong',
+      color: 'error',
+    }
   }
 }
 </script>
@@ -43,6 +63,10 @@ const onSubmit = (form: OrderFormInterface) => {
 
     <OrderForm @submit="onSubmit" />
   </v-card>
+
+  <v-snackbar :timeout="2000" :color="snackbar.color" v-model="snackbar.show">
+    {{ snackbar.content }}
+  </v-snackbar>
 </template>
 
 <style scoped></style>
