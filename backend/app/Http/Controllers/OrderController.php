@@ -26,7 +26,7 @@ class OrderController extends Controller
      */
     public function index(): JsonResponse
     {
-        $orders = Order::with('payment', 'orderItems')->get();
+        $orders = Order::with('payment', 'orderItems', 'client')->get();
         return response()->json($orders);
     }
 

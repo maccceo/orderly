@@ -1,9 +1,11 @@
 import type { Payment } from './Payment'
 import type { OrderItems } from './OrderItems'
+import type { Client } from './Client'
 
 export interface Order {
   id: number
   client_id: number
+  client: Client
   status: OrderStatus
   total: number
   created_at: string

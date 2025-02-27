@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useOrderStore } from '@/stores/orderStore'
-import { useClientStore } from '@/stores/clientStore'
-import { useProductStore } from '@/stores/productStore'
 
 import { storeToRefs } from 'pinia'
 import { formatDate } from '@/utils/formatDate'
@@ -12,7 +10,6 @@ import type { PaymentStatus } from '@/types/Payment'
 
 const { fetchOrders, deleteOrder } = useOrderStore()
 const { orders } = storeToRefs(useOrderStore())
-const { getClientById } = useClientStore()
 
 const headers = ref([
   {
@@ -20,49 +17,42 @@ const headers = ref([
     value: 'id',
     width: '60px',
     sortable: true,
-    headerProps: { class: 'order-table-cell' },
     cellProps: { class: 'order-table-cell' },
   },
   {
     title: 'Client',
-    value: 'client_id',
-    sortable: false,
-    headerProps: { class: 'order-table-cell' },
+    value: 'client.name',
+    sortable: true,
     cellProps: { class: 'order-table-cell' },
   },
   {
     title: 'Status',
     value: 'status',
     sortable: true,
-    headerProps: { class: 'order-table-cell' },
     cellProps: { class: 'order-table-cell' },
   },
   {
     title: 'Total',
     value: 'total',
     sortable: true,
-    headerProps: { class: 'order-table-cell' },
     cellProps: { class: 'order-table-cell' },
   },
   {
     title: 'Created at',
     value: 'created_at',
     sortable: true,
-    headerProps: { class: 'order-table-cell' },
     cellProps: { class: 'order-table-cell' },
   },
   {
     title: 'Last update',
     value: 'updated_at',
     sortable: true,
-    headerProps: { class: 'order-table-cell' },
     cellProps: { class: 'order-table-cell' },
   },
   {
     title: 'Payment',
     value: 'payment.status',
     sortable: true,
-    headerProps: { class: 'order-table-cell' },
     cellProps: { class: 'order-table-cell' },
   },
   {
@@ -70,13 +60,12 @@ const headers = ref([
     value: 'actions',
     width: '150px',
     sortable: false,
-    headerProps: { class: 'order-table-cell' },
     cellProps: { class: 'order-table-cell' },
   },
 ])
-
 const isLoading = ref(false)
 const sortBy = ref<[{ key: string; order: 'asc' | 'desc' }]>([{ key: 'id', order: 'asc' }])
+const search = ref<string>('')
 
 function viewOrder(id: number) {
   router.push({ name: 'order-details', params: { id } })
@@ -126,9 +115,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-card class="container mb-6">
-    <h1 class="text-h2 text-center pa-6">Orderly</h1>
-
+  <h1 class="text-h2 text-center pa-6 text-white mb-3">Orderly</h1>
+  <v-card class="d-flex flex-column mb-6">
     <v-card-title class="d-flex text-h5 py-3 px-5 justify-space-between">
       <div>
         <v-icon large class="mr-2">mdi-shopping</v-icon>
@@ -143,12 +131,26 @@ onMounted(() => {
     </v-card-title>
 
     <v-card-text class="my-3">
+      <v-text-field
+        v-model="search"
+        density="compact"
+        label="Search"
+        prepend-inner-icon="mdi-magnify"
+        variant="solo-filled"
+        flat
+        hide-details
+        single-line
+        class="mb-4"
+      />
+
       <v-data-table
         :headers="headers"
         :sort-by="sortBy"
         :items="orders"
         item-key="id"
         :items-per-page="10"
+        :search="search"
+        :filter-keys="['id', 'client.name', 'status', 'total', 'payment.status']"
         class="order-table elevation-1"
         :loading="isLoading"
         loading-text="Loading..."
@@ -164,8 +166,8 @@ onMounted(() => {
           {{ formatDate(item.updated_at) }}
         </template>
         <!-- client -->
-        <template v-slot:item.client_id="{ item }">
-          {{ getClientById(item.client_id)?.name || item.client_id }}
+        <template v-slot:item.client="{ item }">
+          {{ item }}
         </template>
         <!-- payment -->
         <template v-slot:item.payment.status="{ item }">
@@ -197,10 +199,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-}
 :deep(.order-table-cell) {
   padding: 10px 0 !important;
 }

@@ -19,9 +19,4 @@ const product = computed(() => getProductById(product_id) as Product)
   <hr />
 </template>
 
-<style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-}
-</style>
+<style scoped></style>

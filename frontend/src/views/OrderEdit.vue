@@ -68,11 +68,21 @@ onMounted(async () => {
 </script>
 
 <template>
-  <router-link :to="{ name: 'orders' }"><button>Get back to the orders</button></router-link>
-  <div class="container">
-    <h1>Edit order</h1>
+  <v-card class="d-flex flex-column">
+    <v-card-title class="d-flex text-h5 py-3 px-5 justify-space-between">
+      <div>
+        <v-icon large class="mr-2">mdi-shopping</v-icon>
+        Edit order {{ currentOrder?.id ? '#' + currentOrder.id : '' }}
+      </div>
+      <div>
+        <router-link :to="{ name: 'orders' }">
+          <v-btn color="primary" prepend-icon="mdi-arrow-left"> Go back </v-btn>
+        </router-link>
+      </div>
+    </v-card-title>
+
     <OrderForm v-if="orderForm" :form="orderForm" @submit="onSubmit" />
-  </div>
+  </v-card>
 </template>
 
 <style scoped></style>

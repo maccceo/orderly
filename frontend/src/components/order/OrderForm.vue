@@ -81,39 +81,85 @@ const updateSubtotal = (item: OrderFormItems) => {
 </script>
 
 <template>
-  <form @submit.prevent="submitOrder" v-bind:model="form">
-    <label>Client:</label>
-    <select v-model="form.client_id">
-      <option v-for="client in clients" :key="client.id" :value="client.id">
-        {{ client.name }}
-      </option>
-    </select>
+  <div class="pa-5">
+    <form
+      @submit.prevent="submitOrder"
+      v-bind:model="form"
+      class="d-flex flex-column justify-start align-start"
+    >
+      <div class="flex-row w-100">
+        <v-select
+          v-model="form.client_id"
+          :items="clients"
+          item-title="name"
+          item-value="id"
+          label="Client"
+        />
+      </div>
+      <div class="flex-row w-100">
+        <v-select v-model="form.status" :items="ORDER_STATUSES" label="Status" outlined></v-select>
+      </div>
 
-    <label>Status:</label>
-    <select v-model="form.status">
-      <option v-for="status in ORDER_STATUSES" :key="status" :value="status">
-        {{ status }}
-      </option>
-    </select>
+      <div
+        v-for="(item, index) in form.items"
+        :key="index"
+        class="flex-row w-100 bg-blue-grey-lighten-5 pa-5 mb-3"
+      >
+        <v-select
+          v-model="item.product_id"
+          :items="products"
+          item-title="name"
+          item-value="id"
+          label="Product"
+          outlined
+          @update:modelValue="updateProduct(item)"
+        >
+          <template v-slot:selection="{ item }">
+            {{ item.title === '0' ? '' : item.title }}
+          </template>
+        </v-select>
 
-    <div v-for="(item, index) in form.items" :key="index">
-      <select v-model="item.product_id" @change="updateProduct(item)">
-        <option v-for="product in products" :key="product.id" :value="product.id">
-          {{ product.name }}
-        </option>
-      </select>
-      <template v-if="item.product_id !== 0">
-        <span>{{ item.description }}</span>
-        <input type="number" v-model.number="item.quantity" min="1" @input="updateSubtotal(item)" />
-        <span>Subtotal: {{ item.price }} €</span>
-      </template>
-      <button type="button" @click="removeItem(index)">Remove</button>
-    </div>
-    <button type="button" @click="addItem">Add product</button>
+        <template v-if="item.product_id !== 0">
+          <v-text-field v-model="item.description" label="Description" readonly></v-text-field>
+          <v-text-field
+            v-model.number="item.quantity"
+            label="Quantity"
+            type="number"
+            min="1"
+            @input="updateSubtotal(item)"
+          ></v-text-field>
+          <v-text-field
+            v-model="item.price"
+            :value="`${item.price} €`"
+            label="Subtotal"
+            readonly
+          ></v-text-field>
+        </template>
+        <div class="flex-row w-100">
+          <v-btn color="error" prepend-icon="mdi-delete" @click="removeItem(index)">
+            Delete product
+          </v-btn>
+        </div>
+      </div>
 
-    <p>Order total: {{ orderTotal }} €</p>
-    <button type="submit" :disabled="!canSubmitOrder">Send order</button>
-  </form>
+      <div class="flex-row w-100">
+        <v-btn color="primary" @click="addItem" prepend-icon="mdi-plus"> Add product </v-btn>
+      </div>
+      <div class="flex-row w-100">
+        <v-card-text class="text-h6"> Order total: {{ orderTotal }} € </v-card-text>
+      </div>
+      <div class="flex-row w-100">
+        <v-btn type="submit" color="success" :disabled="!canSubmitOrder" size="large">
+          Send order
+        </v-btn>
+      </div>
+    </form>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+label {
+  font-weight: bold;
+  margin-right: 1rem;
+}
+</style>

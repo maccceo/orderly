@@ -6,7 +6,6 @@ import type {
   CreateOrderPayload,
   OrderForm as OrderFormInterface,
 } from '@/types/Order'
-import { onMounted } from 'vue'
 
 const { createOrder } = useOrderStore()
 
@@ -26,16 +25,24 @@ const onSubmit = (form: OrderFormInterface) => {
     console.error("Can't create order", error)
   }
 }
-
-onMounted(() => {})
 </script>
 
 <template>
-  <router-link :to="{ name: 'orders' }"><button>Get back to the orders</button></router-link>
-  <div class="container">
-    <h1>Create new order</h1>
+  <v-card class="d-flex flex-column">
+    <v-card-title class="d-flex text-h5 py-3 px-5 justify-space-between">
+      <div>
+        <v-icon large class="mr-2">mdi-shopping</v-icon>
+        Create new order
+      </div>
+      <div>
+        <router-link :to="{ name: 'orders' }">
+          <v-btn color="primary" prepend-icon="mdi-arrow-left"> Go back </v-btn>
+        </router-link>
+      </div>
+    </v-card-title>
+
     <OrderForm @submit="onSubmit" />
-  </div>
+  </v-card>
 </template>
 
 <style scoped></style>
