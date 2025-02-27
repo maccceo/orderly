@@ -55,9 +55,17 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create([
             'name' => 'admin',
-            'email' => 'admin@admin.com',
+            'email' => 'admin@orderly.com',
             'email_verified_at' => now(),
+            'role' => 'admin',
             'password' => Hash::make('admin')
+        ]);
+        User::factory()->create([
+            'name' => 'user',
+            'email' => 'user@orderly.com',
+            'email_verified_at' => now(),
+            'role' => 'user',
+            'password' => Hash::make('user')
         ]);
     }
     private function seedClients(): void

@@ -22,7 +22,9 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->first();
-        $token = $user->createToken('auth_token')->plainTextToken;
+
+        $abilities = [$user->role];
+        $token = $user->createToken('auth_token', $abilities)->plainTextToken;
 
         return response()->json([
             'access_token' => $token,
