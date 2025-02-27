@@ -1,11 +1,12 @@
 // src/stores/auth.js
 import router from '@/router'
 import api from '@/services/api'
+import type { User } from '@/types/User'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref(null)
+  const user = ref<User | null>(null)
   const isAuthenticated = ref<boolean>(!!localStorage.getItem('token'))
 
   async function login(credentials: { email: string; password: string }) {
@@ -17,6 +18,7 @@ export const useAuthStore = defineStore('auth', () => {
         return response.data
       })
       console.log('login response', response)
+      user.value = response.user
       isAuthenticated.value = true
       return response
     } catch (error) {
