@@ -1,6 +1,6 @@
 # Orderly
 
-A basic application for monitoring and managing orders.
+A basic application for monitoring and managing orders. Backend is developed in **Laravel 11**, frontend in **Vue 3**.
 
 ## Overview
 
