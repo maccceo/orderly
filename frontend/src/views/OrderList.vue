@@ -7,9 +7,13 @@ import { formatDate } from '@/utils/formatDate'
 import router from '@/router'
 import type { OrderStatus } from '@/types/Order'
 import type { PaymentStatus } from '@/types/Payment'
+import { useClientStore } from '@/stores/clientStore'
+import { useProductStore } from '@/stores/productStore'
 
 const { fetchOrders, deleteOrder } = useOrderStore()
 const { orders } = storeToRefs(useOrderStore())
+const { fetchClients } = useClientStore()
+const { fetchProducts } = useProductStore()
 
 const headers = ref([
   {
@@ -110,12 +114,14 @@ function getOrderStatusColor(status: OrderStatus) {
 }
 
 onMounted(() => {
+  fetchClients()
+  fetchProducts()
   fetchOrders()
 })
 </script>
 
 <template>
-  <h1 class="text-h2 text-center pa-6 text-white mb-3">Orderly</h1>
+  <h1 class="text-h2 text-center pa-6 pt-0 text-white mb-3">Orderly</h1>
   <v-card class="d-flex flex-column mb-6">
     <v-card-title class="d-flex text-h5 py-3 px-5 justify-space-between">
       <div>
