@@ -101,6 +101,9 @@ export const useOrderStore = defineStore('orders', () => {
       setLoading(false)
     }
   }
+  function clearCurrentOrder() {
+    currentOrder.value = null
+  }
 
   function setLoading(status: boolean) {
     loading.value = status
@@ -121,5 +124,6 @@ export const useOrderStore = defineStore('orders', () => {
     createOrder,
     updateOrder,
     deleteOrder,
+    clearCurrentOrder,
   }
 })

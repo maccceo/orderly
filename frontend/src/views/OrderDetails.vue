@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useOrderStore } from '@/stores/orderStore'
@@ -10,13 +10,16 @@ import OrderItem from '@/components/order/OrderItem.vue'
 
 const route = useRoute()
 
-const { fetchOrderById } = useOrderStore()
+const { fetchOrderById, clearCurrentOrder } = useOrderStore()
 const { currentOrder } = storeToRefs(useOrderStore())
 const { getClientById } = useClientStore()
 
 onMounted(() => {
   const orderId = Number(route.params.id)
   fetchOrderById(orderId)
+})
+onUnmounted(() => {
+  clearCurrentOrder()
 })
 </script>
 

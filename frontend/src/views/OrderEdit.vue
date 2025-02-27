@@ -11,12 +11,12 @@ import type {
   UpdateOrderPayload,
 } from '@/types/Order'
 import { storeToRefs } from 'pinia'
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
-const { fetchOrderById, updateOrder } = useOrderStore()
+const { fetchOrderById, updateOrder, clearCurrentOrder } = useOrderStore()
 const { getProductById } = useProductStore()
 const { currentOrder } = storeToRefs(useOrderStore())
 const orderForm = ref<OrderFormInterface | null>()
@@ -84,6 +84,9 @@ onMounted(async () => {
   const orderId = Number(route.params.id)
   const order = await fetchOrderById(orderId)
   setOrderForm(order)
+})
+onUnmounted(() => {
+  clearCurrentOrder()
 })
 </script>
 
