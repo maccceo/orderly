@@ -9,11 +9,13 @@ import type { OrderStatus } from '@/types/Order'
 import type { PaymentStatus } from '@/types/Payment'
 import { useClientStore } from '@/stores/clientStore'
 import { useProductStore } from '@/stores/productStore'
+import { useAuthStore } from '@/stores/authStore'
 
 const { fetchOrders, deleteOrder } = useOrderStore()
 const { orders } = storeToRefs(useOrderStore())
 const { fetchClients } = useClientStore()
 const { fetchProducts } = useProductStore()
+const { isAdmin } = storeToRefs(useAuthStore())
 
 const headers = ref([
   {
@@ -129,7 +131,13 @@ onMounted(() => {
         Orders
       </div>
       <div>
-        <v-btn color="primary" prepend-icon="mdi-plus" @click="createOrder" class="mr-2">
+        <v-btn
+          v-if="isAdmin"
+          color="primary"
+          prepend-icon="mdi-plus"
+          @click="createOrder"
+          class="mr-2"
+        >
           New order
         </v-btn>
         <v-btn color="primary" prepend-icon="mdi-sync" @click="fetchOrders"> Update </v-btn>
@@ -192,10 +200,23 @@ onMounted(() => {
           <v-btn icon size="x-small" color="info" class="mr-1" @click="viewOrder(item.id)">
             <v-icon>mdi-eye</v-icon>
           </v-btn>
-          <v-btn icon size="x-small" color="warning" class="mr-1" @click="editOrder(item.id)">
+          <v-btn
+            v-if="isAdmin"
+            icon
+            size="x-small"
+            color="warning"
+            class="mr-1"
+            @click="editOrder(item.id)"
+          >
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
-          <v-btn icon size="x-small" color="error" @click="deleteOrderConfirm(item.id)">
+          <v-btn
+            v-if="isAdmin"
+            icon
+            size="x-small"
+            color="error"
+            @click="deleteOrderConfirm(item.id)"
+          >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
