@@ -11,12 +11,12 @@ const product = computed(() => getProductById(product_id) as Product)
 </script>
 
 <template>
-  <hr />
-  <p><b>Product: </b>{{ product.name }}</p>
-  <p v-if="product.description"><b>description: </b>{{ product.description }}</p>
-  <p><b>Price: </b>{{ product.price }} € X {{ quantity }}</p>
-  <p><b>total: </b>{{ total }} €</p>
-  <hr />
+  <div class="d-flex flex-column">
+    <p><b>Product: </b>{{ product.name }}</p>
+    <p v-if="product.description"><b>description: </b>{{ product.description }}</p>
+
+    <p class="mt-2"><b>Total: </b>{{ product.price }} € X {{ quantity }} = {{ total }} €</p>
+  </div>
 </template>
 
 <style scoped></style>

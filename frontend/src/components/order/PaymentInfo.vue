@@ -10,18 +10,13 @@ defineProps<{
 </script>
 
 <template>
-  <div class="container">
-    <p><b>status:</b> {{ status }}</p>
+  <div class="d-flex flex-column">
+    <p><b>Status:</b> {{ status }}</p>
     <template v-if="status === 'completed'">
-      <p><b>method:</b>{{ method }}</p>
-      <p><b>paid at:</b> {{ formatDate(paid_at) }}</p>
+      <p><b>Payment method:</b>{{ method }}</p>
+      <p><b>Paid at:</b> {{ formatDate(paid_at) }}</p>
     </template>
   </div>
 </template>
 
-<style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-}
-</style>
+<style scoped></style>

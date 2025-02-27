@@ -21,27 +21,44 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container" v-if="currentOrder">
-    <h1>Order #{{ currentOrder.id }}</h1>
-    <router-link :to="{ name: 'orders' }"><button>Go back</button></router-link>
+  <v-card class="d-flex flex-column">
+    <v-card-title class="d-flex text-h5 py-3 px-5 justify-space-between">
+      <div>
+        <v-icon large class="mr-2">mdi-shopping</v-icon>
+        Order {{ currentOrder?.id ? '#' + currentOrder.id : '' }}
+      </div>
+      <div>
+        <router-link :to="{ name: 'orders' }">
+          <v-btn color="primary" prepend-icon="mdi-arrow-left"> Go back </v-btn>
+        </router-link>
+      </div>
+    </v-card-title>
+    <div class="pa-5" v-if="currentOrder">
+      <p>
+        <b>Client:</b> {{ getClientById(currentOrder.client_id)?.name || currentOrder.client_id }}
+      </p>
+      <p><b>Status:</b> {{ currentOrder.status }}</p>
+      <p><b>Created at:</b> {{ formatDate(currentOrder.created_at) }}</p>
 
-    <p><b>client:</b>{{ getClientById(currentOrder.client_id)?.name || currentOrder.client_id }}</p>
-    <p><b>status:</b> {{ currentOrder.status }}</p>
-    <p><b>created at:</b> {{ formatDate(currentOrder.created_at) }}</p>
-    <p><b>payment:</b></p>
-    <PaymentInfo v-bind="currentOrder.payment" />
-    <p><b>Items:</b></p>
-    <OrderItem v-for="item in currentOrder.order_items" v-bind="item" />
-    <p><b>total:</b> {{ currentOrder.total }} €</p>
-  </div>
-  <div v-else>
-    <h3>No order to show</h3>
-  </div>
+      <div class="flex-row my-2">
+        <p><b>Payment information:</b></p>
+        <PaymentInfo class="ml-2" v-bind="currentOrder.payment" />
+      </div>
+      <div class="flex-row my-2">
+        <p><b>Items:</b></p>
+        <OrderItem
+          v-for="item in currentOrder.order_items"
+          v-bind="item"
+          class="mb-2 bg-blue-grey-lighten-5 pa-2"
+        />
+      </div>
+
+      <p class="text-h5"><b>total:</b> {{ currentOrder.total }} €</p>
+    </div>
+    <div v-else>
+      <h3>No order to show</h3>
+    </div>
+  </v-card>
 </template>
 
-<style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-}
-</style>
+<style scoped></style>
