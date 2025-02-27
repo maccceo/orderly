@@ -25,7 +25,15 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API error:', error)
+    if (error.response?.status === 401) {
+      // redirect to /login if the error doesn't come from /api/login itself
+      if (!error.config.url.includes('/api/login')) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        localStorage.removeItem('user_role')
+        window.location.href = '/login' // hard redirect because Vue router it's not initialized yet
+      }
+    }
     return Promise.reject(error)
   },
 )
